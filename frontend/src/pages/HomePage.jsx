@@ -27,14 +27,14 @@ export default function HomePage() {
   const [view, setView] = useState("table") // "table" | "card"
 
   useEffect(() => {
-    fetch("http://37.114.48.208:5000/schools")
+    fetch("http://yourdomainname.com:5000/schools")
       .then((res) => res.json())
       .then((data) => setSchools(data))
   }, [])
 
   // 添加
   const handleAddSchool = async (school) => {
-    const res = await fetch("http://37.114.48.208:5000/schools", {
+    const res = await fetch("http://yourdomainname.com:5000/schools", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(school),
@@ -45,7 +45,7 @@ export default function HomePage() {
 
   // 编辑
   const handleEditSchool = async (updatedSchool) => {
-    const res = await fetch(`http://37.114.48.208:5000/schools/${updatedSchool.id}`, {
+    const res = await fetch(`http://yourdomainname.com:5000/schools/${updatedSchool.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedSchool),
@@ -56,7 +56,7 @@ export default function HomePage() {
 
   // 删除
   const handleDeleteSchool = async (id) => {
-    await fetch(`http://37.114.48.208:5000/schools/${id}`, { method: "DELETE" })
+    await fetch(`http://yourdomainname.com:5000/schools/${id}`, { method: "DELETE" })
     setSchools((prev) => prev.filter((s) => s.id !== id))
   }
 

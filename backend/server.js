@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { Pool } from "pg";
+import basicAuth from "express-basic-auth";
 
 const app = express();
 app.use(cors());
@@ -11,8 +12,15 @@ const pool = new Pool({
   user: "school_user",
   host: "localhost",
   database: "school_db",
-  password: "Bbctbctbct2",
+  password: "DatabasePassword123!", // 👉 修改成你自己的密码
   port: 5432,
+});
+
+// Basic Auth 配置
+const authMiddleware = basicAuth({
+  users: { admin: "mypassword" }, // 👉 修改成你自己的用户名和密码
+  challenge: true,                 // 让浏览器弹出认证框
+  unauthorizedResponse: "Unauthorized",
 });
 
 // =============== 工具函数 ===============
@@ -22,22 +30,19 @@ function normalize(value) {
 
 function normalizeArray(value) {
   if (!value) return null;
-
   if (Array.isArray(value)) {
     return value.map((v) => String(v).trim()).filter(Boolean);
   }
-
   if (typeof value === "string") {
     if (value.trim() === "") return null;
     return value.split(",").map((v) => v.trim()).filter(Boolean);
   }
-
   return [String(value).trim()];
 }
 
 // =============== 路由部分 ===============
 
-// 获取所有学校
+// ✅ GET 不需要认证（公开）
 app.get("/schools", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM schools ORDER BY id ASC");
@@ -48,8 +53,8 @@ app.get("/schools", async (req, res) => {
   }
 });
 
-// 添加新学校
-app.post("/schools", async (req, res) => {
+// ✅ POST / PUT / DELETE 需要认证
+app.post("/schools", authMiddleware, async (req, res) => {
   try {
     const {
       school_name, state, public_private, urban_rural, program_type,
@@ -91,8 +96,7 @@ app.post("/schools", async (req, res) => {
   }
 });
 
-// 更新学校
-app.put("/schools/:id", async (req, res) => {
+app.put("/schools/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -131,8 +135,7 @@ app.put("/schools/:id", async (req, res) => {
   }
 });
 
-// 删除学校
-app.delete("/schools/:id", async (req, res) => {
+app.delete("/schools/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM schools WHERE id=$1", [id]);
