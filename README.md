@@ -106,16 +106,37 @@ sudo systemctl restart nginx
 ```
 
 ### Run the backend
-编辑server.js
+编辑HomePage.jsx
 
-默认的域名:http://yourdomainname.com
+默认的域名: http://yourdomainname.com
 
-如果你的域名不同，请搜索server.js里用到该域名的地方，替换为你要使用的域名url。
+如果你的域名不同，请搜索Homepage.jsx里用到该域名的地方，替换为你要使用的域名url。
 
 开发环境没有nginx反向代理，请替换为http+数据库IP。
 
 生产环境替换成域名即可。
 
+
+编辑server.js
+输入数据库密码+server api auth密码
+具体地点见下方：
+```
+// ⚠️ 数据库配置
+const pool = new Pool({
+  user: "school_user",
+  host: "localhost",
+  database: "school_db",
+  password: "DatabasePassword123!", // 👉 修改成你自己的密码
+  port: 5432,
+});
+
+// Basic Auth 配置
+const authMiddleware = basicAuth({
+  users: { admin: "mypassword" }, // 👉 修改成你自己的用户名和密码
+  challenge: true,                 // 让浏览器弹出认证框
+  unauthorizedResponse: "Unauthorized",
+});
+```
 
 进入后端：
 ```
