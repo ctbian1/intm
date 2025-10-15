@@ -62,7 +62,7 @@ cd frontend
 ```
 安装依赖：
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 构建生产版本：
 ```
@@ -145,7 +145,7 @@ cd ../backend
 
 安装依赖：
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 
 启动服务（临时）：
