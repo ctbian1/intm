@@ -122,6 +122,12 @@ npm run build
 ```
 生成的文件会在 frontend/dist/
 
+移动到nginx目录
+```
+sudo mkdir -p /var/www/school
+sudo cp -r /path/to/intm/frontend/dist/* /var/www/school/
+root /var/www/school;
+```
 
 配置 Nginx (把前端静态文件托管)：
 ```
@@ -136,7 +142,7 @@ server {
     listen 80;
     server_name yourdomain.com;
 
-    root /root/dev/school-list/frontend/dist;
+    root /var/www/school;
     index index.html;
 
     location / {
@@ -144,7 +150,11 @@ server {
     }
 
     location /schools {
-        proxy_pass http://localhost:5000/schools;
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```
