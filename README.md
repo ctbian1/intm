@@ -126,7 +126,6 @@ npm run build
 ```
 sudo mkdir -p /var/www/school
 sudo cp -r /path/to/intm/frontend/dist/* /var/www/school/
-root /var/www/school;
 ```
 
 配置 Nginx (把前端静态文件托管)：
