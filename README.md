@@ -75,7 +75,7 @@ GRANT ALL PRIVILEGES ON DATABASE school_db TO school_user;
 
 \q
 ```
-导入 schema：(在./backend 目录执行以下命令)
+导入 schema：(在./backend 目录执行以下命令) [在pull project之后进行。]
 ```
 psql -U school_user -h localhost -d school_db -f schema.sql
 ```
@@ -93,6 +93,21 @@ git clone https://github.com/ctbian1/intm.git
 cd intm
 ```
 ### Build the frontend
+```
+# 更新包列表
+sudo apt update
+
+# 安装 Node.js (推荐 LTS 版本，比如 20.x)
+sudo apt install -y curl
+
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# 验证安装
+node -v
+npm -v
+```
+
 进入前端目录：
 ```
 cd frontend
