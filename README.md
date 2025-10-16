@@ -246,14 +246,7 @@ Certbot 会自动续期
 ### Run the backend
 编辑HomePage.jsx
 
-默认的域名: http://yourdomainname.com
-
-如果你的域名不同，请搜索Homepage.jsx里用到该域名的地方，替换为你要使用的域名url。
-
-开发环境没有nginx反向代理，请替换为http+数据库IP。
-
-生产环境替换成域名即可。
-
+默认后端地址由nginx代理，开发环境请将相对地址"/schools" 改为你的后端绝对地址: http://ip:5000/schools.
 
 编辑server.js
 输入数据库密码+server api auth密码
