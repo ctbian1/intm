@@ -156,6 +156,83 @@ sudo nginx -t
 
 sudo systemctl restart nginx
 ```
+#### 🔒 给 Nginx 配置 SSL（HTTPS + 自动续期）
+1. 安装 Certbot 和 Nginx 插件
+
+在 Debian/Ubuntu 系统：
+```
+sudo apt update
+sudo apt install certbot python3-certbot-nginx -y
+```
+2. 申请 SSL 证书（自动修改 Nginx 配置）
+
+假设你的域名是 example.com，并且已经正确解析到你的服务器 IP：
+```
+sudo certbot --nginx -d example.com -d www.example.com
+```
+
+它会自动：
+
+验证域名（通过 Let’s Encrypt）
+
+修改你的 /etc/nginx/sites-enabled/your-site.conf
+
+给你配置好 80 → 443 重定向
+
+过程中会问你是否强制 HTTPS，建议选 Yes
+
+3. 测试自动续期
+
+Let’s Encrypt 证书有效期只有 90 天，Certbot 会自动续期，你可以手动测试：
+```
+sudo certbot renew --dry-run
+```
+4. Certbot 自动续期（systemd/cron）
+
+安装时 Certbot 已经自动配置了定时任务（/lib/systemd/system/certbot.timer）。
+你可以确认：
+```
+systemctl list-timers | grep certbot
+```
+5. Nginx 配置文件（自动生成）
+
+Certbot 会在 /etc/nginx/sites-enabled/ 给你生成类似：
+```
+server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name example.com www.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    root /var/www/intm/frontend/dist;
+    index index.html;
+
+    location /api/ {
+        proxy_pass http://localhost:5000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+✅ 至此：
+
+你的网站 https://example.com 就有了 SSL
+
+Certbot 会自动续期
+
+你不用手动干预
 
 ### Run the backend
 编辑HomePage.jsx
