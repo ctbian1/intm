@@ -25,6 +25,43 @@ sudo apt update
 
 sudo apt install postgresql postgresql-contrib -y
 ```
+🔍 先确认你装的是什么版本
+```
+psql --version
+```
+会输出类似：
+```
+psql (PostgreSQL) 15.6
+```
+🚀 启动对应实例
+
+假设是 15：
+```
+sudo systemctl start postgresql@15-main
+sudo systemctl enable postgresql@15-main
+```
+
+如果是 14：
+```
+sudo systemctl start postgresql@14-main
+sudo systemctl enable postgresql@14-main
+```
+✅ 检查状态
+```
+systemctl status postgresql@15-main
+```
+
+这时应该显示：
+```
+Active: active (running)
+```
+🎯 登录数据库测试
+```
+sudo -u postgres psql
+```
+
+如果能进到 postgres=#，说明服务已经起来了。
+
 
 创建数据库和用户：
 ```
